@@ -1,0 +1,185 @@
+<section>
+    <h1>Outils</h1>
+</section>
+<section>
+    <h2>Éléments du langage</h2>
+    <ul>
+        <li>Lambda / Closure</li>
+        <li>High order function</li>
+        <li>Pattern matching</li>
+        <li>Types algébriques</li>
+    </ul>
+</section>
+<section>
+    <h2>Fonction ?</h2>
+    <dl class="definition">
+        <dt>Fonction :</dt>
+        <dd>procédure prédictible, c'est à dire que si on lui donne plusieurs fois la même entrée, elle nous renvoie toujours la même sortie</dd>
+        <dt>Arité :</dt>
+        <dd>nombre d'arguments d'une fonction</dd>
+    </dl>
+</section>
+<section>
+    <h2>Fonctions d'ordre supérieur</h2>
+    <ul>
+        <li>Une fonction qui retourne une fonction</li>
+        <li>Une fonction qui prend en paramètre au moins une fonction</li>
+        <li>Une fonction qui prend en paramètre au moins une fonction et qui retourne une fonction</li>
+    </ul>
+</section>
+<section>
+    <h2>Natives ?</h2>
+    <div class="table">
+        <div class="table__row">
+            <div class="table__cell vat pbm  prs fragment">
+                <strong>map</strong>(to_cat()) <br>
+                [😁 😂 😃] => [😸 😹 😺]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>filter</strong>(is_cat()) <br>
+                [😁 😂 😹 😃 😸] => [😹 😸]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>remove</strong>(is_cat()) <br>
+                [😁 😂 😹 😃 😸] => [😁 😂 😃]
+            </div>
+        </div>
+        <div class="table__row">
+            <div class="table__cell vat pbm fragment">
+                <strong>take</strong>(3) <br>
+                [😁 😂 😹 😃 😸] => [😁 😂 😹]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>drop</strong>(2) <br>
+                [😁 😂 😹 😃 😸] => [😹 😃 😸]
+            </div>
+            <div class="table__cell vat pbm fragment">
+                <strong>partition</strong>(2) <br>
+                [😁 😹 😃 😸] => [[😁 😹] [😃 😸]]
+            </div>
+        </div>
+        <div class="table__row">
+            <div class="table__cell vat pbm prs fragment">
+                <strong>merge</strong> <br>
+                [😁 😹] [😃 😸] => [😁 😹 😃 😸]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>flatten</strong> <br>
+                [[😁 😹] [😃 😸]] => [😁 😹 😃 😸]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>flatMap / mapCat</strong>(guy_cats()) <br>
+                [😃 😣] => [😃 😸 😺 😣 😿 🙀]
+            </div>
+
+        </div>
+        <div class="table__row">
+            <div class="table__cell vat pbm prs fragment">
+                <strong>distinct</strong> <br>
+                [😌 😍 😏 😌 😍] => [😌 😍 😏]
+            </div>
+            <div class="table__cell vat pbm prs fragment">
+                <strong>dedupe</strong> <br>
+                [😌 😍 😍 😏 😌] => [😌 😍 😏 😌]
+            </div>
+            <div class="table__cell vat pbm fragment">
+                <strong>sort</strong>(happiness_level()) <br>
+                [😁 😂 😔 😞 😪] => [😪 😞 😔 😁 😂]
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <h2>Immutabilité ?</h2>
+    <p>
+        Toute fonction ou méthode ne modifie jamais de la donnée <br>
+        <span class="fragment">(mais peut retourner une copie modifiée)</span>
+    </p>
+    <div class="fragment">
+        <p class="solution">Fluent Interface pattern to the rescue</p>
+        <pre><code class="hljs php">private function map(callable $callback)
+{
+    return new static($this->iterable, $this->composition->append($callback), $this->termination, $this->initial);
+}</code></pre>
+    </div>
+</section>
+<section>
+    <h2>Composition ?</h2>
+    <pre><code class="hljs typescript">function computeMean(grades) {
+    let sum = 0;
+    grades.forEach(grade => {
+        sum += grade;
+    });
+    return sum / grades.length;
+}</code></pre>
+    <pre><code class="hljs typescript">function divideBy(divisor: number) { return (dividend: number) => dividend / divisor; }
+
+function sum() { return (grades: number[]) => {
+    grades.reduce((sum: number, currentValue: number) => sum + currentValue, 0);
+}}
+
+const computeMeanComposition = grades => divideBy(grades.length)(sum());
+// OR
+const computeMeanComposed = grades => compose(divideBy, sum);
+</code></pre>
+</section>
+<section>
+    <h3>Functional only</h3>
+    <pre><code class="hljs typescript">function compose(...functions) {
+    return function composed(result){
+        const list = [...functions];
+
+        while (list.length > 0) {
+            const fn = list.pop();
+            result = fn(result);
+        }
+
+        return result;
+    };
+}</code></pre>
+</section>
+<section>
+    <h3>With OOP powers</h3>
+    <pre><code class="hljs php">class Composition {
+    private $functions = [];
+
+    public function __construct(callable ...$functions) { $this->functions = $functions; }
+
+    public function __invoke() { // Callable object == function
+        if (empty($this->functions)) {
+            return (function ($value) { return $value; })(func_get_arg(0));
+        }
+
+        $functionList = array_reverse($this->functions);
+        $first = array_shift($functionList);
+
+        return array_reduce($functionList,  function ($carry, $item) {
+            return $item($carry);
+        }, call_user_func_array($first, func_get_args()));
+    }
+
+    public function append(callable ...$callback) { // Fluent interface to append composition
+        $self = new self();
+        $self->functions = array_merge($this->functions, $callback);
+        return $self;
+    }
+}
+</code></pre>
+</section>
+<section>
+    <h2>Application partielle / Curryfication ?</h2>
+    <p class="fragment">Pas comme les épices, mais comme le mathématicien, Haskell Curry</p>
+    <dl class="fragment definition">
+        <dt>Application partielle :</dt>
+        <dd>création d'une fonction à partir d'une autre en définissant une ou plusieurs valeurs d'arguments. </dd>
+    </dl>
+    <dl class="fragment definition">
+        <dt>Curryfication :</dt>
+        <dd>création d'une fonction d'ordre supérieure à partir d'une fonction d'arité N (N > 1) décomposée en une chaîne de fonctions d'arité 1</dd>
+    </dl>
+    <pre class="fragment"><code class="hljs typescript">const uncurriedAdd = (x, y) => x + y;
+const curriedAdd = x => y => x + y;
+
+uncurriedAdd(2, 5); // 7
+curriedAdd(2)(5); // 7</code></pre>
+</section>

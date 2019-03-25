@@ -1,0 +1,36 @@
+<section>
+    <h1>Programmation fonctionnelle</h1>
+    <br>
+    <blockquote>un <strong>paradigme de programmation</strong> de type déclaratif qui considère le <strong>calcul</strong> en tant qu'<strong>évaluation de fonctions mathématiques</strong></blockquote>
+</section>
+<section>
+    <blockquote>
+        Comme le <strong>changement d'état</strong> et la <strong>mutation des données</strong> ne peuvent pas être représentés par des évaluations de fonctions, <strong>la programmation fonctionnelle ne les admet pas</strong>,
+        au contraire elle met en avant l'application des fonctions, contrairement au modèle de programmation impérative qui met en avant les changements d'état
+    </blockquote>
+</section>
+<section>
+    <p class="solution">Aborder la résolution de problème de façon différente, en explicitant le <strong>quoi</strong> plutôt que le <strong>comment</strong></p>
+</section>
+<section>
+    <h2>Imperative programming</h2>
+    <pre><code class="hljs php" contenteditable="true">$cities = [];
+foreach ($users as $user) {
+    if ($user->getAddresses() !== null) {
+        foreach ($user->getAddresses() as $address) {
+            if ($address->isActive()) {
+                $cities[] = new City($address->getZip(), $address->getCity());
+            }
+        }
+    }
+} // WARNING: cyclomatic complexity</code></pre>
+    <div class="fragment">
+        <h2>VS Declarative programming</h2>
+        <pre><code class="hljs sql" contenteditable="true">SELECT zip, city
+FROM address
+INNER JOIN user
+    ON address.user = user.id
+WHERE address.is_active = 1
+</code></pre>
+    </div>
+</section>
