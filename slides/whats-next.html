@@ -1,0 +1,29 @@
+<section>
+    <h1>La suite ?</h1>
+</section>
+<section>
+    <h2>Transducers</h2>
+    <dl class="definition">
+        <dt>Transducer</dt>
+        <dd>
+            Transformations algorythmiques composables
+            <br> <span class="fragment solution">Pipeline doppé à la Composition</span>
+        </dd>
+    </dl>
+    <pre><code class="hljs typescript">[1, 2, 3].map(plus_one()).filter(odd()).reduce(sum_reducer()); // 3 loops
+
+//$ npm install ramda
+const R = require('ramda');
+R.transduce(R.compose(R.map(R.add(1), R.filter(R.isOdd)), R.sum())([1, 2, 3]); // 1 loop
+</code></pre>
+</section>
+<section>
+    <h2>Promises / Observables</h2>
+    <img src="resources/img/promise-vs-observable.png" alt="Promise VS Observable">
+</section>
+<section>
+    <h2>Functors / Applicatives / Monads</h2>
+    <p>Gestion des effets de bord et mutation dans des langages purement fonctionnels</p>
+    <img src="resources/img/functor-applicative-monad.png" alt="Functors / Applicatives / Monads">
+    <p class="solution fragment">State / Either / Maybe / Reader / Writer / IO ...</p>
+</section>
