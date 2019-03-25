@@ -173,6 +173,8 @@ const computeMeanComposed = grades => compose(divideBy, sum);
         <dt>Application partielle :</dt>
         <dd>création d'une fonction à partir d'une autre en définissant une ou plusieurs valeurs d'arguments. </dd>
     </dl>
+    <pre class="fragment"><code class="hljs php">$partial = p\partial('implode', ',', p\_());
+$partial(['a', 'b', 'c']); // 'a,b,c'</code></pre>
     <dl class="fragment definition">
         <dt>Curryfication :</dt>
         <dd>création d'une fonction d'ordre supérieure à partir d'une fonction d'arité N (N > 1) décomposée en une chaîne de fonctions d'arité 1</dd>
